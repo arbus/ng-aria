@@ -1,11 +1,15 @@
 angular.module('ngAria', []).factory('$aria', [function(){
   var defaultConfig = {
     ariaHidden : true,
-    ariaChecked: true
+    ariaChecked: true,
+    ariaDisabled: true,
+    ariaRequired: true
   };
   var currentConfig = {
     ariaHidden : false,
-    ariaChecked: false
+    ariaChecked: false,
+    ariaDisabled: false,
+    ariaRequired: false
   };
   return{
     enable: function(config){
@@ -51,6 +55,41 @@ angular.module('ngAria', []).factory('$aria', [function(){
             elem.attr('aria-checked', 'true');
           }
         });
+        scope.$on('$destroy', function(){
+          destroyWatcher();
+        });
+      }
+    },
+    ariaDisabled: function(scope, elem, attr){
+      if($aria.getConfig().ariaDisabled){
+        var destroyWatcher = scope.$watch(function(){
+          return elem.attr('disabled');
+        }, function(){
+          if(angular.isUndefined(elem.attr('disabled'))){
+            elem.attr('aria-disabled', 'false');
+          }else{
+            elem.attr('aria-disabled', 'true');
+          }
+        });
+        scope.$on('$destroy', function(){
+          destroyWatcher();
+        });
+      }
+    },
+    ariaRequired: function(scope, elem, attr){
+      if($aria.getConfig().ariaRequired){
+        var destroyWatcher = scope.$watch(function(){
+          return elem.attr('required');
+        }, function(){
+          if(angular.isUndefined(elem.attr('required'))){
+            elem.attr('aria-required', 'false');
+          }else{
+            elem.attr('aria-required', 'true');
+          }
+        });
+        scope.$on('$destroy', function(){
+          destroyWatcher();
+        });
       }
     }
   };
@@ -65,6 +104,32 @@ angular.module('ngAria', []).factory('$aria', [function(){
       if(attr.type === 'checkbox'){
         $ariaFns.ariaChecked(scope, elem, attr);
       }
+      $ariaFns.ariaDisabled(scope, elem, attr);
+      $ariaFns.ariaRequired(scope, elem, attr);
     }
-  }
+  };
+}]).directive('textarea', ['$ariaFns', function($ariaFns){
+  return{
+    restrict: 'E',
+    link: function(scope, elem, attr){
+      $ariaFns.ariaDisabled(scope, elem, attr);
+      $ariaFns.ariaRequired(scope, elem, attr);
+    }
+  };
+}]).directive('button', ['$ariaFns', function($ariaFns){
+  return{
+    restrict: 'E',
+    link: function(scope, elem, attr){
+      $ariaFns.ariaDisabled(scope, elem, attr);
+      $ariaFns.ariaRequired(scope, elem, attr);
+    }
+  };
+}]).directive('select', ['$ariaFns', function($ariaFns){
+  return{
+    restrict: 'E',
+    link: function(scope, elem, attr){
+      $ariaFns.ariaDisabled(scope, elem, attr);
+      $ariaFns.ariaRequired(scope, elem, attr);
+    }
+  };
 }]);

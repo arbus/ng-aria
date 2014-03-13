@@ -1,4 +1,4 @@
-describe('ariaCheckedAttr', function(){
+describe('ariaDisabledAttr', function(){
   var element;
   beforeEach(module('ngAria'));
 

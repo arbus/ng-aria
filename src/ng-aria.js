@@ -1,22 +1,18 @@
 angular.module('ngAria', []).factory('$aria', [function(){
   var defaultConfig = {
-    ngShowHide : true
+    ariaHidden : true,
+    ariaChecked: true
   };
   var currentConfig = {
-    ngShowHide : false
+    ariaHidden : false,
+    ariaChecked: false
   };
-  var currentWatchers = [];
   return{
     enable: function(config){
-      if(angular.isDefined(config)){
-        this.setConfig(config);
-      }else{
+      if(angular.isUndefined(config)){
         currentConfig = defaultConfig;
-      }
-    },
-    disable: function(){
-      for(var i = 0; i < currentWatchers.length; i++){
-        currentWatchers[i]();
+      }else{
+        this.setConfig(config);
       }
     },
     setConfig: function(config){
@@ -24,27 +20,51 @@ angular.module('ngAria', []).factory('$aria', [function(){
     },
     getConfig : function(){
       return currentConfig;
-    },
-    addWatchExpr: function(expr){
-      currentWatchers.push(expr);
     }
   };
 }]).factory('$ariaFns', ['$aria', function($aria){
   return {
     ariaHidden: function(scope, elem, attr){
-      $aria.addWatchExpr(scope.$watch(function(){
-        return elem.attr('class');
-      }, function(){
-        if(elem.hasClass('ng-hide')){
-          elem.attr('aria-hidden', 'true');
-        }else{
-          elem.attr('aria-hidden', 'false');
-        }  
-      }));
+      if($aria.getConfig().ariaHidden){
+        var destroyWatcher = scope.$watch(function(){
+          return elem.attr('class');
+        }, function(){
+          if(elem.hasClass('ng-hide')){
+            elem.attr('aria-hidden', 'true');
+          }else{
+            elem.attr('aria-hidden', 'false');
+          }  
+        });
+        scope.$on('$destroy', function(){
+          destroyWatcher();
+        });
+      }
+    },
+    ariaChecked: function(scope, elem, attr){
+      if($aria.getConfig().ariaChecked){
+        var destroyWatcher = scope.$watch(function(){
+          return elem.attr('checked');
+        }, function(){
+          if(angular.isUndefined(elem.attr('checked'))){
+            elem.attr('aria-checked', 'false');
+          }else{
+            elem.attr('aria-checked', 'true');
+          }
+        });
+      }
     }
   };
 }]).directive('ngShow', ['$ariaFns', function($ariaFns){
   return $ariaFns.ariaHidden;
 }]).directive('ngHide', ['$ariaFns', function($ariaFns){
   return $ariaFns.ariaHidden;
+}]).directive('input', ['$ariaFns', function($ariaFns){
+  return{
+    restrict: 'E',
+    link: function(scope, elem, attr){
+      if(attr.type === 'checkbox'){
+        $ariaFns.ariaChecked(scope, elem, attr);
+      }
+    }
+  }
 }]);

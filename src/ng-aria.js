@@ -3,13 +3,15 @@ angular.module('ngAria', []).factory('$aria', [function(){
     ariaHidden : true,
     ariaChecked: true,
     ariaDisabled: true,
-    ariaRequired: true
+    ariaRequired: true,
+    ariaInvalid: true
   };
   var currentConfig = {
     ariaHidden : false,
     ariaChecked: false,
     ariaDisabled: false,
-    ariaRequired: false
+    ariaRequired: false,
+    ariaInvalid: true
   };
   return{
     enable: function(config){
@@ -91,6 +93,22 @@ angular.module('ngAria', []).factory('$aria', [function(){
           destroyWatcher();
         });
       }
+    },
+    ariaInvalid: function(scope, elem, attr){
+      if($aria.getConfig().ariaInvalid){
+        var destroyWatcher = scope.$watch(function(){
+          return elem.attr('class');
+        }, function(){
+          if(elem.hasClass('ng-invalid')){
+            elem.attr('aria-invalid', 'true');
+          }else{
+            elem.attr('aria-invalid', 'false');
+          }
+        });
+        scope.$on('$destroy', function(){
+          destroyWatcher();
+        });
+      }
     }
   };
 }]).directive('ngShow', ['$ariaFns', function($ariaFns){
@@ -106,6 +124,7 @@ angular.module('ngAria', []).factory('$aria', [function(){
       }
       $ariaFns.ariaDisabled(scope, elem, attr);
       $ariaFns.ariaRequired(scope, elem, attr);
+      $ariaFns.ariaInvalid(scope, elem, attr);
     }
   };
 }]).directive('textarea', ['$ariaFns', function($ariaFns){
@@ -114,6 +133,7 @@ angular.module('ngAria', []).factory('$aria', [function(){
     link: function(scope, elem, attr){
       $ariaFns.ariaDisabled(scope, elem, attr);
       $ariaFns.ariaRequired(scope, elem, attr);
+      $ariaFns.ariaInvalid(scope, elem, attr);
     }
   };
 }]).directive('button', ['$ariaFns', function($ariaFns){
@@ -130,6 +150,7 @@ angular.module('ngAria', []).factory('$aria', [function(){
     link: function(scope, elem, attr){
       $ariaFns.ariaDisabled(scope, elem, attr);
       $ariaFns.ariaRequired(scope, elem, attr);
+      $ariaFns.ariaInvalid(scope, elem, attr);
     }
   };
 }]);

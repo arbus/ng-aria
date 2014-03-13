@@ -2,6 +2,9 @@
   "name": "ng-aria",
   "version": "0.0.0",
   "description": "Angular module to added ARIA tags automatically",
+  "scripts": {
+   "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+  },
   "devDependencies": {
     "load-grunt-tasks": "^0.4.0",
     "grunt": "^0.4.4",

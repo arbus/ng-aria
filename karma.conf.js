@@ -9,11 +9,9 @@ module.exports = function(config){
   ],
   browsers: ['Chrome'],
   frameworks: ["jasmine"],
-  plugins: ['karma-jasmine', 'karma-chrome-launcher'],
+  plugins: ['karma-jasmine', 'karma-chrome-launcher', 'karma-phantomjs-launcher'],
   reporters: ['progress'],
   port: 9018,
   runnerPort: 9100,
-  colors: true,
-  autoWatch: true,
-  singleRun: false});
+  colors: true});
 }

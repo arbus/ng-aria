@@ -3,8 +3,17 @@ module.exports = function(grunt){
 
   grunt.initConfig({
     karma:{
-      unit:{
+      options:{
         configFile: 'karma.conf.js'
+      },
+      dev:{
+        singleRun: false,
+        autoWatch: true,
+        autoRun: true
+      },
+      continuous:{
+        singleRun: true,
+        browsers: ['PhantomJS']
       }
     },
     jshint:{

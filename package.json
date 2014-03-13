@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Angular module to added ARIA tags automatically",
   "scripts": {
-   "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+    "test": "grunt karma:continuous"
   },
   "devDependencies": {
     "load-grunt-tasks": "^0.4.0",
@@ -12,6 +12,7 @@
     "karma": "^0.12.0",
     "grunt-karma": "^0.8.0",
     "karma-chrome-launcher": "^0.1.2",
-    "karma-jasmine": "^0.2.2"
+    "karma-jasmine": "^0.2.2",
+    "karma-phantomjs-launcher": "^0.1.2"
   }
 }

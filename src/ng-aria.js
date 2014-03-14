@@ -12,92 +12,44 @@ angular.module('ngAria', []).provider('$aria', function(){
     ariaDisabled: false,
     ariaRequired: false,
     ariaInvalid: false
-  }
+  };
+
+  var convertCase = function(input){
+    return input.replace(/[A-Z]/g, function(letter, pos){
+      return (pos ? '-' : '') + letter.toLowerCase();
+    });
+  };
+
+  var genFn = function(watchAttr, attrName, trigger){
+    return function(scope, elem, attr){
+      if(currentConfig[attrName]){
+        var destroyWatcher = scope.$watch(function(){
+          return elem.attr(watchAttr);
+        }, function(newVal, oldVal){
+          var result;
+          if(watchAttr === 'class'){
+            result = elem.hasClass(trigger);
+          }else{
+            result = !angular.isUndefined(elem.attr(watchAttr));
+          }
+          elem.attr(convertCase(attrName), result);
+        });
+        scope.$on('$destroy', function(){
+          destroyWatcher();
+        });
+      }
+    };
+  };
 
   var ariaFactory = function(){
     return {
-      ariaHidden: function(scope, elem, attr){
-        if(currentConfig.ariaHidden){
-          var destroyWatcher = scope.$watch(function(){
-            return elem.attr('class');
-          }, function(){
-            if(elem.hasClass('ng-hide')){
-              elem.attr('aria-hidden', 'true');
-            }else{
-              elem.attr('aria-hidden', 'false');
-            }  
-          });
-          scope.$on('$destroy', function(){
-            destroyWatcher();
-          });
-        }
-      },
-      ariaChecked: function(scope, elem, attr){
-        if(currentConfig.ariaChecked){
-          var destroyWatcher = scope.$watch(function(){
-            return elem.attr('checked');
-          }, function(){
-            if(angular.isUndefined(elem.attr('checked'))){
-              elem.attr('aria-checked', 'false');
-            }else{
-              elem.attr('aria-checked', 'true');
-            }
-          });
-          scope.$on('$destroy', function(){
-            destroyWatcher();
-          });
-        }
-      },
-      ariaDisabled: function(scope, elem, attr){
-        if(currentConfig.ariaDisabled){
-          var destroyWatcher = scope.$watch(function(){
-            return elem.attr('disabled');
-          }, function(){
-            if(angular.isUndefined(elem.attr('disabled'))){
-              elem.attr('aria-disabled', 'false');
-            }else{
-              elem.attr('aria-disabled', 'true');
-            }
-          });
-          scope.$on('$destroy', function(){
-            destroyWatcher();
-          });
-        }
-      },
-      ariaRequired: function(scope, elem, attr){
-        if(currentConfig.ariaRequired){
-          var destroyWatcher = scope.$watch(function(){
-            return elem.attr('required');
-          }, function(){
-            if(angular.isUndefined(elem.attr('required'))){
-              elem.attr('aria-required', 'false');
-            }else{
-              elem.attr('aria-required', 'true');
-            }
-          });
-          scope.$on('$destroy', function(){
-            destroyWatcher();
-          });
-        }
-      },
-      ariaInvalid: function(scope, elem, attr){
-        if(currentConfig.ariaInvalid){
-          var destroyWatcher = scope.$watch(function(){
-            return elem.attr('class');
-          }, function(){
-            if(elem.hasClass('ng-invalid')){
-              elem.attr('aria-invalid', 'true');
-            }else{
-              elem.attr('aria-invalid', 'false');
-            }
-          });
-          scope.$on('$destroy', function(){
-            destroyWatcher();
-          });
-        }
-      }
+      ariaHidden: genFn('class', 'ariaHidden', 'ng-hide'),
+      ariaChecked: genFn('checked', 'ariaChecked'),
+      ariaDisabled: genFn('disabled', 'ariaDisabled'),
+      ariaRequired: genFn('required', 'ariaRequired'),
+      ariaInvalid: genFn('class', 'ariaInvalid', 'ng-invalid')
     };
-  }
+  };
 
   return{
     enable: function(config){
@@ -111,7 +63,7 @@ angular.module('ngAria', []).provider('$aria', function(){
       currentConfig = angular.extend(defaultConfig, config);
     },
     $get: ariaFactory
-  }
+  };
 
   
 }).directive('ngShow', ['$aria', function($aria){

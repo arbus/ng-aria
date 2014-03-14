@@ -1,76 +1,56 @@
 describe('ariaHiddenAttr', function(){
-  var element;
-  beforeEach(module('ngAria'));
-
+  var tmpl = "<span ng-show=\"val\"></span><span ng-hide=\"!val\"></span>";
   describe('basic', function(){
-    beforeEach(inject(function($aria){
-      $aria.enable();
-    }));
+    setupModule();
     it('Set visible on ngShow/Hide',inject(function($rootScope, $compile){
-      element = $compile("<div ng-init=\"val = true\"><span ng-show=\"val\"></span><span ng-hide=\"!val\"></span></div>")($rootScope);
+      $rootScope.val = true;
+      element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      var e1 = angular.element(element[0]).find('span').eq(0);
-      var e2 = angular.element(element[0]).find('span').eq(1);
-      expect(e1.attr('aria-hidden')).toBe('false');
-      expect(e2.attr('aria-hidden')).toBe('false');
+      expectAriaAttr('aria-hidden', 'false');
     }));
 
     it('Set invisible on ngShow/Hide',inject(function($rootScope, $compile){
-      element = $compile("<div ng-init=\"val = false\"><span ng-show=\"val\"></span><span ng-hide=\"!val\"></span></div>")($rootScope);
+      $rootScope.val = false;
+      element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      var e1 = angular.element(element[0]).find('span').eq(0);
-      var e2 = angular.element(element[0]).find('span').eq(1);
-      expect(e1.attr('aria-hidden')).toBe('true');
-      expect(e2.attr('aria-hidden')).toBe('true');
+      expectAriaAttr('aria-hidden', 'true');
     }));  
   });
   
   describe('dynamic', function(){
-    beforeEach(inject(function($aria){
-      $aria.enable();
-    }));
+    setupModule();
     it('Set visible to invisible on ngShow/Hide dynamically', inject(function($rootScope, $compile){
-      element = $compile("<div ng-init=\"val = true\"><span ng-show=\"val\"></span><span ng-hide=\"!val\"></span></div>")($rootScope);
-      $rootScope.$digest();
-      var e1 = angular.element(element[0]).find('span').eq(0);
-      var e2 = angular.element(element[0]).find('span').eq(1);
-      expect(e1.attr('aria-hidden')).toBe('false');
-      expect(e2.attr('aria-hidden')).toBe('false');
-      
       $rootScope.val = false;
+      element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      expect(e1.attr('aria-hidden')).toBe('true');
-      expect(e2.attr('aria-hidden')).toBe('true');
-    }));
-
-    it('Set invisible to visible on ngShow/Hide dynamically', inject(function($rootScope, $compile){
-      element = $compile("<div ng-init=\"val = false\"><span ng-show=\"val\"></span><span ng-hide=\"!val\"></span></div>")($rootScope);
-      $rootScope.$digest();
-      var e1 = angular.element(element[0]).find('span').eq(0);
-      var e2 = angular.element(element[0]).find('span').eq(1);
-      expect(e1.attr('aria-hidden')).toBe('true');
-      expect(e2.attr('aria-hidden')).toBe('true');
+      expectAriaAttr('aria-hidden', 'true');
       
       $rootScope.val = true;
       $rootScope.$digest();
-      expect(e1.attr('aria-hidden')).toBe('false');
-      expect(e2.attr('aria-hidden')).toBe('false');
+      expectAriaAttr('aria-hidden', 'false');
+    }));
+
+    it('Set invisible to visible on ngShow/Hide dynamically', inject(function($rootScope, $compile){
+      $rootScope.val = true;
+      element = $compile(tmpl)($rootScope);
+      $rootScope.$digest();
+      expectAriaAttr('aria-hidden', 'false');
+      
+      $rootScope.val = false;
+      $rootScope.$digest();
+      expectAriaAttr('aria-hidden', 'true');
     }));
   })
   
   describe('disabled', function(){
-    beforeEach(inject(function($aria){
-      $aria.setConfig({
-        ariaHidden: false
-      });
-    }));
+    setupModule({
+      ariaHidden: false
+    });
     it('Set not work with ariaDiabled config is set to false', inject(function($rootScope, $compile){
-      element = $compile("<div ng-init=\"val = false\"><span ng-show=\"val\"></span><span ng-hide=\"!val\"></span></div>")($rootScope);
+      $rootScope.val = false;
+      element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      var e1 = angular.element(element[0]).find('span').eq(0);
-      var e2 = angular.element(element[0]).find('span').eq(1);
-      expect(e1.attr('aria-hidden')).toBe(undefined);
-      expect(e2.attr('aria-hidden')).toBe(undefined);
+      expectAriaAttr('aria-hidden', undefined);
     }));
   });
 });

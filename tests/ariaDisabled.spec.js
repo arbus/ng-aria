@@ -1,141 +1,57 @@
 describe('ariaDisabledAttr', function(){
-  var element;
-  beforeEach(module('ngAria'));
-
+  var tmpl = "<input ng-disabled='val'>"+
+            "<textarea ng-disabled='val'></textarea>"+
+            "<button ng-disabled='val'></button>"+
+            "<select ng-disabled='val'></select>";
   describe('basic', function(){
-    beforeEach(inject(function($aria){
-      $aria.enable();
-    }));
-
+    setupModule();
     it('should set disabled on ngDisabled', inject(function($rootScope, $compile){
-      var tmpl = "<div ng-init='val = true'>"+
-                  "<input ng-disabled='val'>"+
-                  "<textarea ng-disabled='val'></textarea>"+
-                  "<button ng-disabled='val'></button>"+
-                  "<select ng-disabled='val'></select>"+
-                "</div>";
+      $rootScope.val = true;
       element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      var input = angular.element(element[0]).find('input');
-      var textarea = angular.element(element[0]).find('textarea');
-      var button = angular.element(element[0]).find('button');
-      var select = angular.element(element[0]).find('select');
-      
-      expect(input.attr('aria-disabled')).toBe('true');
-      expect(textarea.attr('aria-disabled')).toBe('true');
-      expect(button.attr('aria-disabled')).toBe('true');
-      expect(select.attr('aria-disabled')).toBe('true');
+      expectAriaAttr('aria-disabled', 'true');
     }));
 
-    it('should not set disabled when not disabled', inject(function($rootScope, $compile){
-      var tmpl = "<div ng-init='val = false'>"+
-                  "<input ng-disabled='val'>"+
-                  "<textarea ng-disabled='val'></textarea>"+
-                  "<button ng-disabled='val'></button>"+
-                  "<select ng-disabled='val'></select>"+
-                "</div>";
+    it('should not set disabled attribute when not disabled', inject(function($rootScope, $compile){
+      $rootScope.val = false;
       element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      var input = angular.element(element[0]).find('input');
-      var textarea = angular.element(element[0]).find('textarea');
-      var button = angular.element(element[0]).find('button');
-      var select = angular.element(element[0]).find('select');
-      
-      expect(input.attr('aria-disabled')).toBe('false');
-      expect(textarea.attr('aria-disabled')).toBe('false');
-      expect(button.attr('aria-disabled')).toBe('false');
-      expect(select.attr('aria-disabled')).toBe('false');
+      expectAriaAttr('aria-disabled', 'false');
     }));
   });
 
   describe('dynamic', function(){
-    beforeEach(inject(function($aria){
-      $aria.enable();
-    }));
-
+    setupModule();
     it('should go from disbled to enabled', inject(function($rootScope, $compile){
-      var tmpl = "<div ng-init='val = true'>"+
-                  "<input ng-disabled='val'>"+
-                  "<textarea ng-disabled='val'></textarea>"+
-                  "<button ng-disabled='val'></button>"+
-                  "<select ng-disabled='val'></select>"+
-                "</div>";
+      $rootScope.val = true;
       element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      var input = angular.element(element[0]).find('input');
-      var textarea = angular.element(element[0]).find('textarea');
-      var button = angular.element(element[0]).find('button');
-      var select = angular.element(element[0]).find('select');
-      
-      expect(input.attr('aria-disabled')).toBe('true');
-      expect(textarea.attr('aria-disabled')).toBe('true');
-      expect(button.attr('aria-disabled')).toBe('true');
-      expect(select.attr('aria-disabled')).toBe('true');
-
+      expectAriaAttr('aria-disabled', 'true');
       $rootScope.val = false;
       $rootScope.$digest();
-      expect(input.attr('aria-disabled')).toBe('false');
-      expect(textarea.attr('aria-disabled')).toBe('false');
-      expect(button.attr('aria-disabled')).toBe('false');
-      expect(select.attr('aria-disabled')).toBe('false');
+      expectAriaAttr('aria-disabled', 'false');
     }));
   
     it('should go from enabled to disabled', inject(function($rootScope, $compile){
-      var tmpl = "<div ng-init='val = false'>"+
-                  "<input ng-disabled='val'>"+
-                  "<textarea ng-disabled='val'></textarea>"+
-                  "<button ng-disabled='val'></button>"+
-                  "<select ng-disabled='val'></select>"+
-                "</div>";
+      $rootScope.val = false;
       element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      var input = angular.element(element[0]).find('input');
-      var textarea = angular.element(element[0]).find('textarea');
-      var button = angular.element(element[0]).find('button');
-      var select = angular.element(element[0]).find('select');
-      
-      expect(input.attr('aria-disabled')).toBe('false');
-      expect(textarea.attr('aria-disabled')).toBe('false');
-      expect(button.attr('aria-disabled')).toBe('false');
-      expect(select.attr('aria-disabled')).toBe('false');
-
+      expectAriaAttr('aria-disabled', 'false');
       $rootScope.val = true;
       $rootScope.$digest();
-
-      expect(input.attr('aria-disabled')).toBe('true');
-      expect(textarea.attr('aria-disabled')).toBe('true');
-      expect(button.attr('aria-disabled')).toBe('true');
-      expect(select.attr('aria-disabled')).toBe('true');
+      expectAriaAttr('aria-disabled', 'true');
     }));
   });
 
   describe('disabled', function(){
-    beforeEach(inject(function($aria){
-      $aria.setConfig({
-        ariaDisabled: false
-      });
-    }));
-
+    setupModule({
+      ariaDisabled: false
+    });
     it('should not set ariaDisabled with configured not to', inject(function($rootScope, $compile){
-      var tmpl = "<div ng-init='val = false'>"+
-                  "<input ng-disabled='val'>"+
-                  "<textarea ng-disabled='val'></textarea>"+
-                  "<button ng-disabled='val'></button>"+
-                  "<select ng-disabled='val'></select>"+
-                "</div>";
+      $rootScope.val = false;
       element = $compile(tmpl)($rootScope);
       $rootScope.$digest();
-      var input = angular.element(element[0]).find('input');
-      var textarea = angular.element(element[0]).find('textarea');
-      var button = angular.element(element[0]).find('button');
-      var select = angular.element(element[0]).find('select');
-
-      expect(input.attr('aria-disabled')).toBe(undefined);
-      expect(textarea.attr('aria-disabled')).toBe(undefined);
-      expect(button.attr('aria-disabled')).toBe(undefined);
-      expect(select.attr('aria-disabled')).toBe(undefined);
+      expectAriaAttr('aria-disabled', undefined);
     }));
-
   });
-
 });

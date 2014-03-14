@@ -1,10 +1,10 @@
 module.exports = function(config){
   config.set({basePath: '.',
   files: [
-    'lib/jquery-1.8.2.min.js',
     'lib/angular.js',
     'lib/angular-mocks.js',
     'src/**/*.js',
+    'tests/helpers.js',
     'tests/**/*.js'
   ],
   browsers: ['Chrome'],

@@ -20,34 +20,43 @@ angular.module('ngAria', []).provider('$aria', function(){
     });
   };
 
-  var genFn = function(watchAttr, attrName, trigger){
+  var watchAttr = function(watchAttr, ariaAttrName, watchValue){
     return function(scope, elem, attr){
-      if(currentConfig[attrName]){
+      if(currentConfig[ariaAttrName]){
         var destroyWatcher = scope.$watch(function(){
           return elem.attr(watchAttr);
         }, function(newVal, oldVal){
-          var result;
-          if(watchAttr === 'class'){
-            result = elem.hasClass(trigger);
-          }else{
-            result = !angular.isUndefined(elem.attr(watchAttr));
+          if(watchValue){
+            return elem.attr(convertCase(ariaAttrName), newVal);
           }
-          elem.attr(convertCase(attrName), result);
+          elem.attr(convertCase(ariaAttrName), !angular.isUndefined(newVal));
         });
         scope.$on('$destroy', function(){
           destroyWatcher();
         });
       }
-    };
-  };
+    }
+  }
+
+  var watchClass = function(className, ariaAttrName){
+    return function(scope, elem, attr){
+      if(currentConfig[ariaAttrName]){
+        var destroyWatcher = scope.$watch(function(){
+          return elem.attr('class');
+        }, function(newVal, oldVal){
+          elem.attr(convertCase(ariaAttrName), elem.hasClass(className));
+        });
+      }
+    }
+  }
 
   var ariaFactory = function(){
     return {
-      ariaHidden: genFn('class', 'ariaHidden', 'ng-hide'),
-      ariaChecked: genFn('checked', 'ariaChecked'),
-      ariaDisabled: genFn('disabled', 'ariaDisabled'),
-      ariaRequired: genFn('required', 'ariaRequired'),
-      ariaInvalid: genFn('class', 'ariaInvalid', 'ng-invalid')
+      ariaHidden: watchClass('ng-hide', 'ariaHidden'),
+      ariaChecked: watchAttr('checked', 'ariaChecked', false),
+      ariaDisabled: watchAttr('disabled', 'ariaDisabled', false),
+      ariaRequired: watchAttr('required', 'ariaRequired', false),
+      ariaInvalid: watchClass('ng-invalid', 'ariaInvalid')
     };
   };
 

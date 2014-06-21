@@ -1,7 +1,7 @@
 ngAria [![Build Status](https://travis-ci.org/arbus/ng-aria.png?branch=master)](https://travis-ci.org/arbus/ng-aria)
 ======
 
-This module is aims to implement [aria](http://www.w3.org/WAI/PF/aria/states_and_properties) attributes to your angular app with as little effort from the you as possible. 
+This module is aims to help you implement [aria](http://www.w3.org/WAI/PF/aria/states_and_properties) attributes to your angular app.
 
 Currently implemented aria attributes:
 + aria-hidden

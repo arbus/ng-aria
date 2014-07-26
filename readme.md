@@ -13,12 +13,12 @@ Currently implemented aria attributes:
 ## Usage
 
 ```js
-var app = angular.module('myAwesomeApp', ['ngAria']).config(['$ariaProvider', function($ariaProvider){
+var app = angular.module('myAwesomeApp', ['angularAria']).config(['ariaProvider', function(ariaProvider){
     // This will just enable ariaBindings to their default setting
-    $ariaProvider.enable();
+    ariaProvider.enable();
   
     // You can use this to disable specific attributes from being enabled.
-    $ariaProvider.setConfig({
+    ariaProvider.setConfig({
       ariaHidden: false
     });
 

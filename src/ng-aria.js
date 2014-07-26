@@ -1,4 +1,4 @@
-angular.module('ngAria', []).provider('$aria', function(){
+angular.module('angularAria', []).provider('aria', function(){
   var defaultConfig = {
     ariaHidden : true,
     ariaChecked: true,
@@ -75,46 +75,46 @@ angular.module('ngAria', []).provider('$aria', function(){
   };
 
   
-}).directive('ngShow', ['$aria', function($aria){
-  return $aria.ariaHidden;
-}]).directive('ngHide', ['$aria', function($aria){
-  return $aria.ariaHidden;
-}]).directive('input', ['$aria', function($aria){
+}).directive('ngShow', ['aria', function(aria){
+  return aria.ariaHidden;
+}]).directive('ngHide', ['aria', function(aria){
+  return aria.ariaHidden;
+}]).directive('input', ['aria', function(aria){
   return{
     restrict: 'E',
     link: function(scope, elem, attr){
       if(attr.type === 'checkbox'){
-        $aria.ariaChecked(scope, elem, attr);
+        aria.ariaChecked(scope, elem, attr);
       }
-      $aria.ariaDisabled(scope, elem, attr);
-      $aria.ariaRequired(scope, elem, attr);
-      $aria.ariaInvalid(scope, elem, attr);
+      aria.ariaDisabled(scope, elem, attr);
+      aria.ariaRequired(scope, elem, attr);
+      aria.ariaInvalid(scope, elem, attr);
     }
   };
-}]).directive('textarea', ['$aria', function($aria){
+}]).directive('textarea', ['aria', function(aria){
   return{
     restrict: 'E',
     link: function(scope, elem, attr){
-      $aria.ariaDisabled(scope, elem, attr);
-      $aria.ariaRequired(scope, elem, attr);
-      $aria.ariaInvalid(scope, elem, attr);
+      aria.ariaDisabled(scope, elem, attr);
+      aria.ariaRequired(scope, elem, attr);
+      aria.ariaInvalid(scope, elem, attr);
     }
   };
-}]).directive('button', ['$aria', function($aria){
+}]).directive('button', ['aria', function(aria){
   return{
     restrict: 'E',
     link: function(scope, elem, attr){
-      $aria.ariaDisabled(scope, elem, attr);
-      $aria.ariaRequired(scope, elem, attr);
+      aria.ariaDisabled(scope, elem, attr);
+      aria.ariaRequired(scope, elem, attr);
     }
   };
-}]).directive('select', ['$aria', function($aria){
+}]).directive('select', ['aria', function(aria){
   return{
     restrict: 'E',
     link: function(scope, elem, attr){
-      $aria.ariaDisabled(scope, elem, attr);
-      $aria.ariaRequired(scope, elem, attr);
-      $aria.ariaInvalid(scope, elem, attr);
+      aria.ariaDisabled(scope, elem, attr);
+      aria.ariaRequired(scope, elem, attr);
+      aria.ariaInvalid(scope, elem, attr);
     }
   };
 }]);

@@ -1,7 +1,7 @@
 var setupModule = function(config){
   beforeEach(function(){
-    angular.module('test', ['ngAria']).config(['$ariaProvider', function($ariaProvider){
-      $ariaProvider.enable(config);
+    angular.module('test', ['angularAria']).config(['ariaProvider', function(ariaProvider){
+      ariaProvider.enable(config);
     }]);
   });
   beforeEach(module('test'));
